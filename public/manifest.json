@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "React Chrome Extension",
+  "description": "A simple React app as a Chrome extension",
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}
