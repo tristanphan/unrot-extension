@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["popup/src", "sidepanel/src", "options/src", "shared", "other_scripts"]
 }

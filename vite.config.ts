@@ -15,11 +15,19 @@ export default defineConfig({
         }),
     ],
     build: {
+        minify: false,  // for debugging
         outDir: 'build',
         rollupOptions: {
             input: {
-                main: './index.html',
+                popup: './popup/index.html',
+                sidepanel: './sidepanel/index.html',
+                options: './options/index.html',
+                content_script: './other_scripts/content_script.ts',
+                service_worker: './other_scripts/service_worker.ts',
             },
+            output: {
+                entryFileNames: "assets/[name].js"
+            }
         },
     },
 });
