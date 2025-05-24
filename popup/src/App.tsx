@@ -1,8 +1,12 @@
 import {ReactNode} from "react";
-import {EXTENSION_NAME} from "../../shared/constants";
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core';
+import { ButtonProgress } from './ButtonProgress';
 
 function App(): ReactNode {
-    return <>{EXTENSION_NAME} popup!!</>
+    return <MantineProvider>
+                <ButtonProgress />
+            </MantineProvider>
 }
 
 export default App

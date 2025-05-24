@@ -3,6 +3,10 @@ import { Card } from '../shared/card.ts';
 console.log("This is a content script that runs on Quizlet");
 
 function parse() {
+  console.log('parsing');
+  // const seeMoreButton: HTMLButtonElement | null = document.getElementsByClassName('w151px1v')[0]?.querySelector('.AssemblyButtonBase');
+  // seeMoreButton?.click();
+
   const cards: HTMLCollection = document.getElementsByClassName('SetPageTermsList-term');
   const results: Card[] = [];
 
@@ -22,7 +26,16 @@ function parse() {
     results.push(resultCard);
   });
 
-  chrome.storage.local.set({'results': results});
+  chrome.storage.local.set({'results': results}, () => {
+    chrome.storage.local.get(['results']).then((result) => {console.log(result)});
+  });
 }
 
-parse();
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  console.log('messaged received', message);
+  if (message === 'parse-cards') {
+    console.log('parse cards message received');
+    parse();
+    sendResponse('success');
+  }
+})
