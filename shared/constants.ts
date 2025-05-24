@@ -1,1 +1,1 @@
-export const EXTENSION_NAME = "unrot";
+export const EXTENSION_NAME: string = "unrot";

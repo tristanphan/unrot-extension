@@ -16,7 +16,13 @@
     },
     {
       "matches": ["*://*.instagram.com/*"],
-      "js": ["assets/content_script_instagram.js"]
+      "js": ["assets/content_script_instagram_loader.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["assets/*"]
     }
   ],
   "background": {
