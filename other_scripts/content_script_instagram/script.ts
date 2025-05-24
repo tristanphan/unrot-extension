@@ -1,25 +1,33 @@
-import { Card } from "../../shared/card.ts";
 import { EXTENSION_NAME } from "../../shared/constants.ts";
 import { createRoot, Root } from "react-dom/client";
-import CardElement from "./CardElement.tsx";
+import QuestionPage from "./QuestionPage.tsx";
 import { createElement } from "react";
 
-async function getRandomCard(): Promise<Card | undefined> {
-    const cards: (Card[] | undefined) = (await chrome.storage.local.get("results"))["results"];
-    if (cards === undefined) return undefined
-    const index: number = Math.floor(Math.random() * cards.length)
-    return cards[index]
+function injectNunitoCss() {
+    const googleapisLink = document.createElement("link")
+    googleapisLink.href = "https://fonts.googleapis.com"
+    googleapisLink.rel = "preconnect"
+    document.head.append(googleapisLink)
+
+    const gstaticLink = document.createElement("link")
+    gstaticLink.href = "https://fonts.gstatic.com"
+    gstaticLink.rel = "preconnect"
+    document.head.append(gstaticLink)
+
+    const nunitoLink = document.createElement("link")
+    nunitoLink.href = "https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+    nunitoLink.rel = "stylesheet"
+    document.head.append(nunitoLink)
 }
 
-function createQuizCardElement(card: Card, sibling: HTMLElement) {
+function insertQuizCardElement(sibling: HTMLElement) {
 
     // Create quiz card
     const boundingBox: HTMLElement = sibling.querySelector(":scope > div > div")!
     const quizCardElement: HTMLDivElement = document.createElement("div")
     quizCardElement.id = "my-react-root"
     quizCardElement.classList.add(EXTENSION_NAME)
-    const quizCardReactElement = createElement(CardElement, {
-        card: card,
+    const quizCardReactElement = createElement(QuestionPage, {
         width: boundingBox.style.width,
         height: boundingBox.style.height,
     })
@@ -31,20 +39,15 @@ function createQuizCardElement(card: Card, sibling: HTMLElement) {
 }
 
 async function handleNewReels(elements: HTMLElement[]): Promise<void> {
-    for (const element of elements) {
-        if (!element.hasChildNodes()) continue
-
-        const card: Card | undefined = await getRandomCard()
-        if (card === undefined) {
-            console.warn("No cards found, skipping for now")
-            return
-        }
-
-        createQuizCardElement(card, element)
-    }
+    elements
+        .filter((element) => element.hasChildNodes())
+        .forEach((element, index) => {
+            if (index % 4 === 0) insertQuizCardElement(element)
+        })
 }
 
 function setupReelListener() {
+    injectNunitoCss()
     const reelContainer: HTMLDivElement = document.querySelector("section > main > div")!
 
     const observer = new MutationObserver((mutationList: MutationRecord[], _observer: MutationObserver) => {
