@@ -24,3 +24,5 @@ function parse() {
 
   chrome.storage.local.set({'results': results});
 }
+
+parse();
