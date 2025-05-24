@@ -22,7 +22,8 @@ export default defineConfig({
                 popup: './popup/index.html',
                 sidepanel: './sidepanel/index.html',
                 options: './options/index.html',
-                content_script: './other_scripts/content_script.ts',
+                content_script_quizlet: './other_scripts/content_script_quizlet.ts',
+                content_script_instagram: './other_scripts/content_script_instagram.ts',
                 service_worker: './other_scripts/service_worker.ts',
             },
             output: {
