@@ -29,8 +29,8 @@ function CardElement(
         }}
         >
             <div>time to unrot!</div>
-            <div>{card.word}</div>
-            <div>{card.def}</div>
+            <div>{card.question}</div>
+            <div>{card.answer}</div>
         </div>
     </div>
 }

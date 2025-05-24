@@ -4,17 +4,21 @@ import { useInterval } from '@mantine/hooks';
 import classes from './ButtonProgress.module.css';
 
 
-async function send() {
+async function send(question : string) {
     const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
     const tabId = tab.id;
     if (tabId !== undefined) {
-        await chrome.tabs.sendMessage(tabId, "parse-cards").then(
+        await chrome.tabs.sendMessage(tabId, "parse-cards-"+question).then(
             () => {console.log('successful response')}, 
             () => {console.log('failure')});
     }
 }
 
-export function ButtonProgress() {
+interface ButtonProgressProps {
+  question: string
+}
+
+export function ButtonProgress({question} : ButtonProgressProps) {
   const theme = useMantineTheme();
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -38,7 +42,7 @@ export function ButtonProgress() {
       fullWidth
       className={classes.button}
       onClick={() => {
-        send();
+        send(question);
         return loaded ? setLoaded(false) : !interval.active && interval.start();
       }}
       color={loaded ? 'teal' : theme.primaryColor}

@@ -1,5 +1,5 @@
 export interface Card {
-    word: string | null,
-    def: string | null,
+    question: string | null,
+    answer: string | null,
     img: string | null,
 };
