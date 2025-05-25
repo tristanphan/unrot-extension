@@ -16,12 +16,14 @@ async function send(question : string) {
 
 interface ButtonProgressProps {
   question: string
+  quizletLoaded: boolean
+  setPdfLoaded: Function
+  setQuizletLoaded: Function
 }
 
-export function ButtonProgress({question} : ButtonProgressProps) {
+export function ButtonProgress({quizletLoaded, setPdfLoaded, setQuizletLoaded, question} : ButtonProgressProps) {
   const theme = useMantineTheme();
   const [progress, setProgress] = useState(0);
-  const [loaded, setLoaded] = useState(false);
 
   const interval = useInterval(
     () =>
@@ -31,7 +33,8 @@ export function ButtonProgress({question} : ButtonProgressProps) {
         }
 
         interval.stop();
-        setLoaded(true);
+        setQuizletLoaded(true);
+        setPdfLoaded(false);
         return 0;
       }),
     20
@@ -43,13 +46,14 @@ export function ButtonProgress({question} : ButtonProgressProps) {
       className={classes.button}
       onClick={() => {
         send(question);
-        return loaded ? setLoaded(false) : !interval.active && interval.start();
+        return quizletLoaded ? setQuizletLoaded(false) : !interval.active && interval.start();
       }}
-      color={loaded ? 'teal' : theme.primaryColor}
+      color={quizletLoaded ? 'teal' : 'blue'}
       radius="md"
+      mt="sm"
     >
       <div className={classes.label}>
-        {progress !== 0 ? 'Loading cards' : loaded ? 'Cards uploaded' : 'Load cards'}
+        {progress !== 0 ? 'Loading cards' : quizletLoaded ? 'Cards uploaded' : 'Load cards'}
       </div>
       {progress !== 0 && (
         <Progress
