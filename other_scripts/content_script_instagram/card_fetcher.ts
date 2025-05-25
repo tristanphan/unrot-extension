@@ -17,31 +17,36 @@ export async function getCard(): Promise<Question | undefined> {
     const cards: (Card[] | undefined) = (await chrome.storage.local.get("results"))["results"];
     if (cards === undefined) return undefined
 
-    const correctCard: Card = sampleWeighted(
-        cards, confidenceWeighter
-    )
-    const incorrectCards: Card[] = [sample(cards, [correctCard])]
-    incorrectCards.push(sample(cards, [correctCard, ...incorrectCards]))
-    incorrectCards.push(sample(cards, [correctCard, ...incorrectCards]))
-    incorrectCards.push(sample(cards, [correctCard, ...incorrectCards]))
-    const correctIndex: number = sample([0, 1, 2, 3], [])
-    const answerChoices: Content[] = incorrectCards.map((card: Card) => ({
-        text: card.answer ?? undefined,
-        img: card.answer_img ?? undefined,
-    }))
-    answerChoices.splice(correctIndex, 0, {
-        text: correctCard.answer ?? undefined,
-        img: correctCard.answer_img ?? undefined,
-    })
+    try {
+        const correctCard: Card = sampleWeighted(
+            cards, confidenceWeighter
+        )
+        const incorrectCards: Card[] = [sample(cards, [correctCard])]
+        incorrectCards.push(sample(cards, [correctCard, ...incorrectCards]))
+        incorrectCards.push(sample(cards, [correctCard, ...incorrectCards]))
+        incorrectCards.push(sample(cards, [correctCard, ...incorrectCards]))
+        const correctIndex: number = sample([0, 1, 2, 3], [])
+        const answerChoices: Content[] = incorrectCards.map((card: Card) => ({
+            text: card.answer ?? undefined,
+            img: card.answer_img ?? undefined,
+        }))
+        answerChoices.splice(correctIndex, 0, {
+            text: correctCard.answer ?? undefined,
+            img: correctCard.answer_img ?? undefined,
+        })
 
-    return {
-        question: {
-            text: correctCard.question ?? undefined,
-            img: correctCard.question_img ?? undefined
-        },
-        answers: answerChoices,
-        correctIndex: correctIndex,
-        correctCard: correctCard,
+        return {
+            question: {
+                text: correctCard.question ?? undefined,
+                img: correctCard.question_img ?? undefined
+            },
+            answers: answerChoices,
+            correctIndex: correctIndex,
+            correctCard: correctCard,
+        }
+    } catch {
+        console.log("not enough flashcards")
+        return undefined
     }
 }
 

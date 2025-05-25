@@ -27,6 +27,7 @@ export function sampleWeighted<T>(
 }
 
 export function sample<T>(bag: T[], avoid: T[]) {
+    if (bag.length <= avoid.length) throw new Error("sample cannot be collected")
     let candidate: T = bag[Math.floor(Math.random() * bag.length)]
     while (avoid.includes(candidate)) {
         candidate = bag[Math.floor(Math.random() * bag.length)]

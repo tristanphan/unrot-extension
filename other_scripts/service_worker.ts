@@ -8,6 +8,10 @@ chrome.runtime.onMessage.addListener((
         void chrome.action.openPopup()
     }
     if (message.action === "FETCH_URL") {
+        if (message.url === undefined) {
+            sendResponse({ error: "Failed to fetch image" });
+            return true;
+        }
         fetch(message.url)
             .then(response => response.blob())
             .then(blob => {

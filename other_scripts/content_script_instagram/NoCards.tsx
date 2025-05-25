@@ -6,7 +6,7 @@ function NoCards() {
             flexDirection: "column",
         }}>
         <div>
-            add some flashcards to unrot your brain
+            add at least 10 flashcards to unrot your brain
         </div>
         <div
             className={"unrot-open-quizlet-button"}

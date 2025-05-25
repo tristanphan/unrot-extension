@@ -106,8 +106,6 @@ function QuestionPage(
             color: "white",
             display: "flex",
             justifyContent: "center",
-            scrollSnapAlign: "start",
-            scrollSnapStop: "always",
             fontFamily: "Nunito, sans-serif"
         }}
         ref={ref}
@@ -126,6 +124,8 @@ function QuestionPage(
                 backgroundColor: "#161616",
                 borderRadius: "36px",
                 border: "1px solid #2e2e2e",
+                scrollSnapAlign: "start",
+                scrollSnapStop: "always",
             }}
             ref={printingRef}
         >
