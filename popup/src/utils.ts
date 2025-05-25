@@ -18,7 +18,7 @@ function extractCardsFromString(str: string): Card[] | null {
   return null;
 }
 
-export async function sendFile(file : File | null): Promise<void> {
+export async function sendFile(file : File | null, setPdfCardsReturned: Function): Promise<void> {
     if (file) {
         const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY});
         console.log("added api key");
@@ -56,10 +56,11 @@ export async function sendFile(file : File | null): Promise<void> {
                     chrome.storage.local.set({'results': cards}, () => {
                         chrome.storage.local.get(['results']).then((result) => {console.log(result)})}
                     );
+                    setPdfCardsReturned(true);
                     return;
                 }
             }
-            alert('Sorry an error occurred. Please try again');
+            alert('sorry an error occurred. please try again');
         }
     }
 }

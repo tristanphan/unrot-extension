@@ -18,10 +18,11 @@ interface ButtonProgressProps {
   question: string
   quizletLoaded: boolean
   setPdfLoaded: Function
+  setPdfCardsReturned: Function
   setQuizletLoaded: Function
 }
 
-export function ButtonProgress({quizletLoaded, setPdfLoaded, setQuizletLoaded, question} : ButtonProgressProps) {
+export function ButtonProgress({quizletLoaded, setPdfLoaded, setPdfCardsReturned, setQuizletLoaded, question} : ButtonProgressProps) {
   const theme = useMantineTheme();
   const [progress, setProgress] = useState(0);
 
@@ -35,6 +36,7 @@ export function ButtonProgress({quizletLoaded, setPdfLoaded, setQuizletLoaded, q
         interval.stop();
         setQuizletLoaded(true);
         setPdfLoaded(false);
+        setPdfCardsReturned(false);
         return 0;
       }),
     20
@@ -53,7 +55,7 @@ export function ButtonProgress({quizletLoaded, setPdfLoaded, setQuizletLoaded, q
       mt="sm"
     >
       <div className={classes.label}>
-        {progress !== 0 ? 'Loading cards' : quizletLoaded ? 'Cards uploaded' : 'Load cards'}
+        {progress !== 0 ? 'loading cards' : quizletLoaded ? 'cards uploaded' : 'load cards'}
       </div>
       {progress !== 0 && (
         <Progress
