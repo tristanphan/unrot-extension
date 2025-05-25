@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useState } from "react";
 import AnswerChoice from "./AnswerChoice.tsx";
 import { Question } from "./card_fetcher.ts";
+import { Card } from "../../shared/card.ts";
 
 function QuestionCard(
     {
@@ -8,14 +9,14 @@ function QuestionCard(
         answerHandler,
     }: {
         card: Question,
-        answerHandler: (correct: boolean) => void,
+        answerHandler: (correct: boolean, card: Card) => void,
     }): ReactNode {
     const [enableAnswerChoices, setEnableAnswerChoices] = useState<boolean>(true)
 
     const clickHandler = useCallback((correct: boolean) => {
         setEnableAnswerChoices(false)
-        answerHandler(correct)
-    }, [answerHandler])
+        answerHandler(correct, card.correctCard)
+    }, [answerHandler, card.correctCard])
 
     return <div style={{
         width: "100%",
@@ -31,7 +32,7 @@ function QuestionCard(
                 maxWidth: "80%",
                 paddingBottom: "20px",
             }}
-        >{card.question}</div>
+        >{card.question.text}</div>
         <div
             className={"unrot-answer-row"}
             style={{
@@ -42,13 +43,13 @@ function QuestionCard(
             }}
         >
             <AnswerChoice
-                text={card.answers[0]}
+                text={card.answers[0].text ?? "placeholder"}
                 isCorrect={card.correctIndex === 0}
                 clickHandler={clickHandler}
                 isEnabled={enableAnswerChoices}
             />
             <AnswerChoice
-                text={card.answers[1]}
+                text={card.answers[1].text ?? "placeholder"}
                 isCorrect={card.correctIndex === 1}
                 clickHandler={clickHandler}
                 isEnabled={enableAnswerChoices}
@@ -64,13 +65,13 @@ function QuestionCard(
             }}
         >
             <AnswerChoice
-                text={card.answers[2]}
+                text={card.answers[2].text ?? "placeholder"}
                 isCorrect={card.correctIndex === 2}
                 clickHandler={clickHandler}
                 isEnabled={enableAnswerChoices}
             />
             <AnswerChoice
-                text={card.answers[3]}
+                text={card.answers[3].text ?? "placeholder"}
                 isCorrect={card.correctIndex === 3}
                 clickHandler={clickHandler}
                 isEnabled={enableAnswerChoices}

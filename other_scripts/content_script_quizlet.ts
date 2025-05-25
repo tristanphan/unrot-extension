@@ -1,4 +1,5 @@
-import { Card } from '../shared/card.ts'; 
+import { Card } from '../shared/card.ts';
+import { v4 as uuidv4 } from 'uuid';
 
 console.log("This is a content script that runs on Quizlet");
 
@@ -22,13 +23,17 @@ function parse(question : string) {
         question: term,
         question_img: null,
         answer: def,
-        answer_img: img
-      } : 
+        answer_img: img,
+        confidence: 0,
+        id: uuidv4(),
+      } :
       {
         question: def,
         question_img: img,
         answer: term,
         answer_img: null,
+        confidence: 0,
+        id: uuidv4(),
       };
 
     results.push(resultCard);

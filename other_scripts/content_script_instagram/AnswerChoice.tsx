@@ -1,4 +1,5 @@
-import { CSSProperties, useCallback, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useId, useRef, useState } from "react";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 function AnswerChoice(
     {
@@ -14,6 +15,10 @@ function AnswerChoice(
     }
 ) {
     const [selected, setSelected] = useState<boolean>(false)
+    const [isTruncated, setIsTruncated] = useState<boolean>(false)
+    const tooltipId: string = useId()
+    const textRef = useRef<HTMLDivElement | null>(null)
+
     const cardStyle: CSSProperties = {
         padding: "10px",
         border: "1px solid #424242",
@@ -36,14 +41,34 @@ function AnswerChoice(
         clickHandler(isCorrect)
     }, [clickHandler, isCorrect])
 
+    useEffect(() => {
+        if (textRef.current) {
+            const isTruncated = textRef.current.scrollWidth > textRef.current.clientWidth
+                || textRef.current.scrollHeight > textRef.current.clientHeight;
+            setIsTruncated(isTruncated);
+        }
+    }, [text]);
+
     return <div
         className={"unrot-answer-choice-box"}
         style={cardStyle}
         onClick={(isEnabled) ? onClick : () => {
         }}
     >
+        {isTruncated &&
+            <ReactTooltip
+                id={tooltipId}
+                place={"bottom"}
+                style={{
+                    maxWidth: "250px",
+                }}
+                variant={"light"}
+            >{text}</ReactTooltip>
+        }
         <div
+            data-tooltip-id={tooltipId}
             className={"unrot-answer-choice-text"}
+            ref={textRef}
             style={{
                 overflow: "hidden",
                 display: "-webkit-box",
@@ -52,8 +77,11 @@ function AnswerChoice(
                 textOverflow: "ellipsis",
                 height: "fit-content",
                 wordWrap: "break-word",
+                lineHeight: "normal",
             }}
-        >{text}</div>
+        >
+            {text}
+        </div>
     </div>
 }
 

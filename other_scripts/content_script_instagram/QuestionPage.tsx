@@ -1,8 +1,12 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { setScrollLock } from "./scroll.ts";
-import { getCard, Question } from "./card_fetcher.ts";
+import { getCard, Question, updateConfidence } from "./card_fetcher.ts";
 import QuestionCard from "./QuestionCard.tsx";
+import { useChromeStorageLocal } from "use-chrome-storage";
+import { Card } from "../../shared/card.ts";
+import { confidenceScoreDiffer } from "./algorithms.ts";
+import NoCards from "./NoCards.tsx";
 
 function QuestionPage(
     {
@@ -17,7 +21,10 @@ function QuestionPage(
     const [numberCompleted, setNumberCompleted] = useState<number>(0)
     const [numberTotal, _setNumberTotal] = useState<number>(5)
     const [solved, setSolved] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
     const [isWrong, setIsWrong] = useState<boolean>(false)
+    const [score, setScore] = useChromeStorageLocal("score", 0);
+
     const { ref, inView } = useInView({
         threshold: 0.8,
     });
@@ -29,22 +36,31 @@ function QuestionPage(
             console.log("got card", card)
             questionElementId.current++
             setCard(card)
+            if (card === undefined) {
+                setError(true)
+                setScrollLock(false)
+            }
         })
     }, []);
 
     useEffect(() => {
-        if (inView && !solved) {
+        if (inView && !solved && !error) {
             console.log("SCROLL LOCK")
             setScrollLock(true)
             setTimeout(() => {
-                printingRef.current?.scrollIntoView({ behavior: 'smooth' });
+                printingRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    inline: "center",
+                    block: "center",
+                });
             }, 500)
         }
-    }, [inView, solved])
+    }, [error, inView, solved])
 
-    const answerHandler = useCallback(async (correct: boolean) => {
+    const answerHandler = useCallback(async (correct: boolean, card: Card) => {
         console.log("answer handler", correct)
         if (correct) {
+            await updateConfidence(1, card.id)
             setNumberCompleted(numberCompleted + 1)
             setTimeout(() => {
                 if (numberCompleted + 1 === numberTotal) {
@@ -63,9 +79,14 @@ function QuestionPage(
                 }
             }, 1000)
         } else {
+            await updateConfidence(-1, card.id)
             setIsWrong(true)
         }
-    }, [numberCompleted, numberTotal])
+
+        let scoreDiff = confidenceScoreDiffer(correct, card.confidence)
+        if (score + scoreDiff < 0) scoreDiff = -score
+        setScore(score + scoreDiff)
+    }, [numberCompleted, numberTotal, score, setScore])
 
     const congratulationsText: ReactNode = solved
         ? <div style={{
@@ -82,7 +103,7 @@ function QuestionPage(
             answerHandler={answerHandler}
             key={questionElementId.current}
         />
-        : undefined
+        : <NoCards></NoCards>
 
     return <div
         className={"unrot-outer-container"}
@@ -112,7 +133,7 @@ function QuestionPage(
             }}
             ref={printingRef}
         >
-            <UpperBar numberCompleted={numberCompleted} numberTotal={numberTotal}/>
+            {!error && <UpperBar numberCompleted={numberCompleted} numberTotal={numberTotal}/>}
             <div
                 className={"unrot-question-container"}
                 style={{
@@ -129,7 +150,7 @@ function QuestionPage(
                 {questionCard}
                 {congratulationsText}
             </div>
-            <LowerBar
+            {!error && <LowerBar
                 onContinue={() => {
                     getCard().then((card) => {
                         console.log("got card", card)
@@ -138,8 +159,9 @@ function QuestionPage(
                         setIsWrong(false)
                     })
                 }}
-                show={isWrong}
-            />
+                showContinue={isWrong}
+                score={score}
+            />}
         </div>
     </div>
 }
@@ -170,7 +192,7 @@ function UpperBar(
                 top: "15px",
                 textAlign: "center",
             }}
-        >it's time to unrot!
+        >undoom your scroll!
         </div>
         <div
             className={"unrot-progress-text"}
@@ -186,14 +208,36 @@ function UpperBar(
     </div>
 }
 
-function LowerBar({ onContinue, show }: { onContinue: () => void, show: boolean }) {
-    if (!show) return undefined
+function LowerBar(
+    { onContinue, showContinue, score }:
+    { onContinue: () => void, showContinue: boolean, score: number }
+) {
     return <div
         style={{
             position: "relative",
             width: "100%",
         }}>
         <div
+            className={"unrot-score-text"}
+            style={{
+                position: "absolute",
+                left: "20px",
+                bottom: "15px",
+                fontWeight: 800,
+                fontSize: "14pt",
+                opacity: 0.7,
+                textAlign: "left"
+            }}
+        >
+        <span style={{
+            fontSize: "12pt",
+            fontWeight: "normal",
+        }}>score</span>
+            <br/>
+            {score}
+        </div>
+        {showContinue && <div
+            className={"unrot-continue-button"}
             style={{
                 backgroundColor: "#4255ff",
                 border: "1px solid #424242",
@@ -208,6 +252,7 @@ function LowerBar({ onContinue, show }: { onContinue: () => void, show: boolean 
         >
             try another
         </div>
+        }
     </div>
 }
 
