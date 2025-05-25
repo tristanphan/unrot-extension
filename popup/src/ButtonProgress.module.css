@@ -1,6 +1,7 @@
 .button {
   position: relative;
   transition: background-color 150ms ease;
+  width: 100%;
 }
 
 .progress {
