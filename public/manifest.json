@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.quizlet.com/*"],
-      "js": ["assets/content_script_quizlet.js"]
+      "js": ["assets/content_script_quizlet_loader.js"]
     },
     {
       "matches": ["*://*.instagram.com/*"],
