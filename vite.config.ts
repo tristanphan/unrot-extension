@@ -10,7 +10,23 @@ export default defineConfig({
                 {
                     src: 'public/manifest.json',
                     dest: '.',  // relative to outDir
-                }
+                },
+                {
+                    src: 'public/icon16.png',
+                    dest: '.',  // relative to outDir
+                },
+                {
+                    src: 'public/icon32.png',
+                    dest: '.',  // relative to outDir
+                },
+                {
+                    src: 'public/icon48.png',
+                    dest: '.',  // relative to outDir
+                },
+                {
+                    src: 'public/icon128.png',
+                    dest: '.',  // relative to outDir
+                },
             ],
         }),
     ],

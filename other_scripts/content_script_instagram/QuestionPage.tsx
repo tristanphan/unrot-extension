@@ -194,7 +194,7 @@ function UpperBar(
             className={"unrot-progress-text"}
             style={{
                 position: "absolute",
-                right: "20px",
+                right: "30px",
                 top: "15px",
                 fontWeight: 800,
                 fontSize: "14pt",
