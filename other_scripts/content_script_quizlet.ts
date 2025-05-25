@@ -17,11 +17,19 @@ function parse(question : string) {
     const term = cardTexts[0]?.textContent !== null ? cardTexts[0]?.textContent.replace(/[\n\r]+/g, '/') : '';
     const def = cardTexts[1]?.textContent !== null ? cardTexts[1]?.textContent.replace(/[\n\r]+/g, '/') : '';
 
-    const resultCard: Card = {
-      question: question === 'term' ? term : def,
-      answer: question === 'term' ? def : term,
-      img: img,
-    }
+    const resultCard: Card = question === 'term' ? 
+      {
+        question: term,
+        question_img: null,
+        answer: def,
+        answer_img: img
+      } : 
+      {
+        question: def,
+        question_img: img,
+        answer: term,
+        answer_img: null,
+      };
 
     results.push(resultCard);
   });
