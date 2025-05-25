@@ -33,7 +33,6 @@ function QuestionPage(
 
     useEffect(() => {
         getCard().then((card) => {
-            console.log("got card", card)
             questionElementId.current++
             setCard(card)
             if (card === undefined) {
@@ -45,7 +44,6 @@ function QuestionPage(
 
     useEffect(() => {
         if (inView && !solved && !error) {
-            console.log("SCROLL LOCK")
             setScrollLock(true)
             setTimeout(() => {
                 printingRef.current?.scrollIntoView({
@@ -58,21 +56,18 @@ function QuestionPage(
     }, [error, inView, solved])
 
     const answerHandler = useCallback(async (correct: boolean, card: Card) => {
-        console.log("answer handler", correct)
         if (correct) {
             await updateConfidence(1, card.id)
             setNumberCompleted(numberCompleted + 1)
             setTimeout(() => {
                 if (numberCompleted + 1 === numberTotal) {
                     // Done
-                    console.log("SCROLL UNLOCK")
                     setCard(undefined);
                     setSolved(true)
                     setScrollLock(false)
                 } else {
                     // Not done yet
                     getCard().then((card) => {
-                        console.log("got card", card)
                         questionElementId.current++
                         setCard(card)
                     })
@@ -108,6 +103,7 @@ function QuestionPage(
     return <div
         className={"unrot-outer-container"}
         style={{
+            color: "white",
             display: "flex",
             justifyContent: "center",
             scrollSnapAlign: "start",
@@ -154,7 +150,6 @@ function QuestionPage(
             {!error && <LowerBar
                 onContinue={() => {
                     getCard().then((card) => {
-                        console.log("got card", card)
                         questionElementId.current++
                         setCard(card)
                         setIsWrong(false)

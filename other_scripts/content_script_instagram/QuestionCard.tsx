@@ -26,7 +26,7 @@ function QuestionCard(
                 if (response.dataUrl) {
                     setImageUrl(response.dataUrl)
                 } else {
-                    console.error("Image failed to load:", response.error);
+                    console.error(`Image ${card.question.img} failed to load:`, response.error);
                 }
             }
         );

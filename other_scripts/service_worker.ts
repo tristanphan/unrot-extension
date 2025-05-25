@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener((
                 reader.readAsDataURL(blob);
             })
             .catch(error => {
-                console.error("Image fetch failed", error);
+                console.error(`URL ${message.url} fetch failed: `, error);
                 sendResponse({ error: "Failed to fetch image" });
             });
         return true;

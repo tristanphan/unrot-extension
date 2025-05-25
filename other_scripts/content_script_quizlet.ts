@@ -1,8 +1,6 @@
 import { Card } from '../shared/card.ts';
 import { v4 as uuidv4 } from 'uuid';
 
-console.log("This is a content script that runs on Quizlet");
-
 function parse(question : string) {
   console.log('parsing');
   // const seeMoreButton: HTMLButtonElement | null = document.getElementsByClassName('w151px1v')[0]?.querySelector('.AssemblyButtonBase');
@@ -18,7 +16,7 @@ function parse(question : string) {
     const term = cardTexts[0]?.textContent !== null ? cardTexts[0]?.textContent.replace(/[\n\r]+/g, '/') : '';
     const def = cardTexts[1]?.textContent !== null ? cardTexts[1]?.textContent.replace(/[\n\r]+/g, '/') : '';
 
-    const resultCard: Card = question === 'term' ? 
+    const resultCard: Card = question === 'term' ?
       {
         question: term,
         question_img: null,

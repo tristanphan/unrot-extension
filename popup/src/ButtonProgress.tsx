@@ -51,11 +51,12 @@ export function ButtonProgress({quizletLoaded, setPdfLoaded, setPdfCardsReturned
         return quizletLoaded ? setQuizletLoaded(false) : !interval.active && interval.start();
       }}
       color={quizletLoaded ? 'teal' : 'blue'}
+      fw={"bold"}
       radius="md"
       mt="sm"
     >
       <div className={classes.label}>
-        {progress !== 0 ? 'loading cards' : quizletLoaded ? 'cards uploaded' : 'load cards'}
+        {progress !== 0 ? 'loading cards' : quizletLoaded ? 'cards uploaded' : 'load cards from quizlet'}
       </div>
       {progress !== 0 && (
         <Progress

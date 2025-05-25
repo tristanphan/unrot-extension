@@ -6,9 +6,6 @@
   "action": {
     "default_popup": "popup/index.html"
   },
-  "side_panel": {
-    "default_path": "sidepanel/index.html"
-  },
   "content_scripts": [
     {
       "matches": ["*://*.quizlet.com/*"],
@@ -28,12 +25,7 @@
   "background": {
     "service_worker": "assets/service_worker.js"
   },
-  "options_ui": {
-      "page": "options/index.html",
-      "open_in_tab": true
-  },
   "permissions": [
-    "sidePanel",
     "storage"
   ]
 }

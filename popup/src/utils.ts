@@ -1,5 +1,6 @@
 import { GoogleGenAI, createUserContent, createPartFromUri } from "@google/genai";
 import { Card } from '../../shared/card.ts';
+import { v4 as uuidv4 } from 'uuid';
 
 function extractCardsFromString(str: string): Card[] | null {
   const match = str.match(/\[.*\]/s);
@@ -10,6 +11,8 @@ function extractCardsFromString(str: string): Card[] | null {
         return results.map((card: Card) => {
             card.question_img = null;
             card.answer_img = null;
+            card.id = uuidv4();
+            card.confidence = 0;
             return card;
         });
     } catch (e) {

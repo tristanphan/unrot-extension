@@ -103,7 +103,7 @@ function AnswerChoiceImage({ url }: { url: string }) {
                 if (response.dataUrl) {
                     setImageUrl(response.dataUrl)
                 } else {
-                    console.error("Image failed to load:", response.error);
+                    console.error(`Image ${url} failed to load:`, response.error);
                 }
             }
         );

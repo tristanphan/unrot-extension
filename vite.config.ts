@@ -20,8 +20,6 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 popup: './popup/index.html',
-                sidepanel: './sidepanel/index.html',
-                options: './options/index.html',
                 content_script_quizlet: './other_scripts/content_script_quizlet.ts',
                 content_script_instagram: './other_scripts/content_script_instagram/script.ts',
                 content_script_instagram_loader: './other_scripts/content_script_instagram/loader.ts',
