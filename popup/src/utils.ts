@@ -1,8 +1,26 @@
 import { GoogleGenAI, createUserContent, createPartFromUri } from "@google/genai";
+import { Card } from '../../shared/card.ts';
+
+function extractCardsFromString(str: string): Card[] | null {
+  const match = str.match(/\[.*\]/s);
+  if (match) {
+    try {
+        const results = JSON.parse(match[0]);
+        console.log('results: ', results);
+        return results.map((card: Card) => {
+            card.question_img = null;
+            card.answer_img = null;
+            return card;
+        });
+    } catch (e) {
+    }
+  }
+  return null;
+}
 
 export async function sendFile(file : File | null): Promise<void> {
     if (file) {
-        const ai = new GoogleGenAI({ apiKey: "AIzaSyDGCVYSlZGcdCuydMe6mUvVouuPaCoCVnM" });
+        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY});
         console.log("added api key");
         const myfile = await ai.files.upload({
             file: file,
@@ -31,6 +49,17 @@ export async function sendFile(file : File | null): Promise<void> {
                 ]),
             });
             console.log("result.text=", result.text);
+            if (result.text) {
+                const cards: Card[] | null = extractCardsFromString(result.text);
+                if (cards) {
+                    console.log('cards: ', cards);
+                    chrome.storage.local.set({'results': cards}, () => {
+                        chrome.storage.local.get(['results']).then((result) => {console.log(result)})}
+                    );
+                    return;
+                }
+            }
+            alert('Sorry an error occurred. Please try again');
         }
     }
 }

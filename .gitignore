@@ -26,3 +26,4 @@ build
 *.sw?
 
 popup/src/.env
+.env
