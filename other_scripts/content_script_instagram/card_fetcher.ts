@@ -46,8 +46,7 @@ export async function getCard(): Promise<Question | undefined> {
 }
 
 export async function updateConfidence(delta: number, id: string) {
-    const cards: (Card[] | undefined) = (await chrome.storage.local.get("results"))["results"];
-    if (cards === undefined) throw new Error("No cards found")
+    const cards: (Card[]) = (await chrome.storage.local.get("results"))["results"] ?? []
     for (const index in cards) {
         if (cards[index].id !== id) continue
         cards[index].confidence += delta
@@ -56,5 +55,4 @@ export async function updateConfidence(delta: number, id: string) {
         await chrome.storage.local.set({ 'results': cards })
         return
     }
-    throw new Error(`Card with ID ${id} not found`)
 }

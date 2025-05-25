@@ -103,7 +103,7 @@ function QuestionPage(
             answerHandler={answerHandler}
             key={questionElementId.current}
         />
-        : <NoCards></NoCards>
+        : undefined
 
     return <div
         className={"unrot-outer-container"}
@@ -149,6 +149,7 @@ function QuestionPage(
             >
                 {questionCard}
                 {congratulationsText}
+                {error && <NoCards/>}
             </div>
             {!error && <LowerBar
                 onContinue={() => {
@@ -247,6 +248,7 @@ function LowerBar(
                 bottom: "60px",
                 right: "30px",
                 padding: "10px 15px",
+                fontWeight: "bold",
             }}
             onClick={onContinue}
         >

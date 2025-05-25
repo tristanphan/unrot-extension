@@ -17,6 +17,7 @@ function NoCards() {
                 cursor: "pointer",
                 padding: "10px 15px",
                 margin: "20px 0 5px 0",
+                fontWeight: "bold",
             }}
             onClick={() => window.open("https://quizlet.com/", "_blank")}
         >
@@ -30,10 +31,11 @@ function NoCards() {
                 borderRadius: "15px",
                 cursor: "pointer",
                 padding: "10px 15px",
+                fontWeight: "bold",
             }}
             onClick={() => chrome.runtime.sendMessage({ action: "OPEN_POPUP" })}
         >
-            or make your own set
+            or convert a pdf
         </div>
     </div>
 }

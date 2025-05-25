@@ -38,12 +38,32 @@ function insertQuizCardElement(sibling: HTMLElement) {
     root.render(quizCardReactElement)
 }
 
+let pity: number = 0
+const MAX_PITY: number = 10
+
 async function handleNewReels(elements: HTMLElement[]): Promise<void> {
-    elements
+    /**
+     * ==== Heuristics for adding a quiz ====
+     * 1. do not append to the last element of a batch
+     * 2. do not append to consecutive batches
+     * 3. each eligible element has a 20% chance of appending
+     */
+    const videoElements = elements
         .filter((element) => element.hasChildNodes())
-        .forEach((element, index) => {
-            if (index % 4 === 0) insertQuizCardElement(element)
-        })
+    let index: number = 0
+    while (index < videoElements.length - 1) {
+        // Gambling
+        let shouldAppend: boolean = (Math.random() < 0.25)
+        if (pity === MAX_PITY) shouldAppend = true
+        if (shouldAppend) {
+            pity = 1 // because we skip 1
+            insertQuizCardElement(videoElements[index])
+            index += 2
+        } else {
+            pity += 1
+            index += 1
+        }
+    }
 }
 
 function setupReelListener() {

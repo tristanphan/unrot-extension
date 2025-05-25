@@ -1,23 +1,21 @@
 import { CSSProperties, useCallback, useEffect, useId, useRef, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { Content } from "./card_fetcher.ts";
 
 function AnswerChoice(
     {
-        text,
+        answer,
         isCorrect,
         isEnabled,
         clickHandler,
     }: {
-        text: string,
+        answer: Content,
         isCorrect: boolean,
         isEnabled: boolean,
         clickHandler: (correct: boolean) => void,
     }
 ) {
     const [selected, setSelected] = useState<boolean>(false)
-    const [isTruncated, setIsTruncated] = useState<boolean>(false)
-    const tooltipId: string = useId()
-    const textRef = useRef<HTMLDivElement | null>(null)
 
     const cardStyle: CSSProperties = {
         padding: "10px",
@@ -25,7 +23,7 @@ function AnswerChoice(
         borderRadius: "15px",
         margin: "5px",
         textAlign: "center",
-        backgroundColor: (selected)
+        backgroundColor: (selected || (!isEnabled && isCorrect))
             ? (isCorrect ? "#00973c" : "#c91a25")
             : "#2e2e2e",
         cursor: (isEnabled) ? "pointer" : "default",
@@ -41,6 +39,22 @@ function AnswerChoice(
         clickHandler(isCorrect)
     }, [clickHandler, isCorrect])
 
+    return <div
+        className={"unrot-answer-choice-box"}
+        style={cardStyle}
+        onClick={(isEnabled) ? onClick : () => {
+        }}
+    >
+        {(answer.text !== undefined) && <AnswerChoiceText text={answer.text}/>}
+        {(answer.img !== undefined) && <AnswerChoiceImage url={answer.img}/>}
+    </div>
+}
+
+function AnswerChoiceText({ text }: { text: string }) {
+    const [isTruncated, setIsTruncated] = useState<boolean>(false)
+    const textRef = useRef<HTMLDivElement | null>(null)
+    const tooltipId: string = useId()
+
     useEffect(() => {
         if (textRef.current) {
             const isTruncated = textRef.current.scrollWidth > textRef.current.clientWidth
@@ -49,22 +63,16 @@ function AnswerChoice(
         }
     }, [text]);
 
-    return <div
-        className={"unrot-answer-choice-box"}
-        style={cardStyle}
-        onClick={(isEnabled) ? onClick : () => {
-        }}
-    >
-        {isTruncated &&
-            <ReactTooltip
-                id={tooltipId}
-                place={"bottom"}
-                style={{
-                    maxWidth: "250px",
-                }}
-                variant={"light"}
-            >{text}</ReactTooltip>
-        }
+    return <>{isTruncated &&
+        <ReactTooltip
+            id={tooltipId}
+            place={"bottom"}
+            style={{
+                maxWidth: "250px",
+            }}
+            variant={"light"}
+        >{text}</ReactTooltip>
+    }
         <div
             data-tooltip-id={tooltipId}
             className={"unrot-answer-choice-text"}
@@ -82,7 +90,36 @@ function AnswerChoice(
         >
             {text}
         </div>
-    </div>
+    </>
+}
+
+function AnswerChoiceImage({ url }: { url: string }) {
+    const [imageUrl, setImageUrl] = useState<string | undefined>(undefined)
+
+    useEffect(() => {
+        chrome.runtime.sendMessage(
+            { action: "FETCH_URL", url: url },
+            (response) => {
+                if (response.dataUrl) {
+                    setImageUrl(response.dataUrl)
+                } else {
+                    console.error("Image failed to load:", response.error);
+                }
+            }
+        );
+    }, [url]);
+
+    if (imageUrl === undefined) return <></>
+    return <img
+        className={"unrot-answer-image"}
+        src={imageUrl}
+        alt={"question image"}
+        style={{
+            borderRadius: "8px",
+            maxWidth: "100%",
+            maxHeight: "100%",
+        }}
+    />
 }
 
 export default AnswerChoice
